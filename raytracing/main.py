@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 from PIL import Image
 
 from sphere import Sphere
+from light import Light
 from colors import Colors as colors
 
 def save_bitmap(bitmap: np.array, output_filename: str) -> None:
@@ -28,11 +29,17 @@ def raytrace(bitmap: np.array, scene: list[Sphere]):
       point = (col, row, 0)
       for s in scene:
         if s.overlaps(point):
+          # funkcja
           bitmap[row, col] = s.color
 
 
 def main() -> None:
-  spheres = [Sphere(100, (500, 500, 0), colors.BLUE), Sphere(50, (100, 100, 0), colors.RED)]
+  spheres = [
+    Sphere(100, (500, 500, 0), colors.BLUE),
+    Sphere(50, (100, 100, 0), colors.RED),
+
+    Light((800, 800, 500), colors.BLUE)
+  ]
 
   size = (1000,1000, 3)
   bitmap = create_empty_bitmap(size)
