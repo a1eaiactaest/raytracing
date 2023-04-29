@@ -23,13 +23,22 @@ class Sphere:
     dx = point[0] - self.position[0]
     dy = point[1] - self.position[1]
 
-    z = self.position.z + math.sqrt(self.radius**2 - dx**2 - dy**2)
+    try:
+      z = self.position[2] + math.sqrt(self.radius**2 - dx**2 - dy**2)
+    except ValueError:
+      return 0
+
     v1 = Vector(dx, dy, z-self.position[2])
     v2 = Vector(light.position[0] - point[0],
                 light.position[1] - point[1],
-                light.position[2] - point[2])
+                light.position[2] - z)
 
-    coeff = ()/()
+    numerator = (v1.x * v2.x + v1.y * v2.y + v1.z * v2.z)
+    denominator = math.sqrt(v1.x**2 + v1.y**2 + v1.z**2) * math.sqrt(v2.x**2 + v2.y**2 + v2.z**2)
+
+    coeff = numerator/denominator
+
+    return coeff if coeff > 0 else 0
 
 
 
