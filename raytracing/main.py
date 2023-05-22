@@ -43,8 +43,11 @@ def generate_random_speheres(n: int) -> list[Sphere]:
     spheres.append(Sphere(r, position, color))
   return spheres
 
-def plot_bitmap(bitmap: np.array) -> None:
-  plt.imshow(bitmap)
+def plot_bitmap(*bitmaps: np.array) -> None:
+  fig = plt.figure()
+  for bitmap in bitmaps:
+    fig.add_subplot(bitmap)
+    plt.imshow(bitmap)
   plt.show()
 
 def raytrace(bitmap: np.array, scene: list[Sphere], lights: list[Light]):
@@ -78,6 +81,20 @@ def mask(bitmap: np.array, shape=SHAPE) -> np.array:
 
   return new_bitmap
 
+def brightness(bitmap: np.array, factor: float, shape=SHAPE) -> np.array:
+  new_bitmap = create_empty_bitmap(shape)
+  for row in range(len(bitmap)):
+    for col in range(len(bitmap[row])):
+      new_pixel = np.array([], dtype=np.uint8)
+      for v in bitmap[row][col]:
+        pval = int(v * factor)
+        if pval < 255:
+          new_pixel = np.append(new_pixel, np.uint8(pval))
+        else:
+          new_pixel = np.append(new_pixel, np.uint8(255))
+      new_bitmap[row][col] = new_pixel
+  return new_bitmap
+
 def raytracing_plot():
   lights = [
     Light((800, 800, 500), colors.BLUE)
@@ -98,11 +115,14 @@ def raytracing_plot():
   plot_bitmap(newb)
 
 def main() -> None:
-  I = np.asarray(Image.open('./img/1200px-Norwegian_hen.jpg'))
+  I = np.array(Image.open('./img/1200px-Norwegian_hen.jpg'))
   print(I.shape)
-  b = mask(I, I.shape)
-  plot_bitmap(b)
-
+  print(I.dtype)
+  print(I[0][0].dtype)
+  #b = mask(I, I.shape)
+  #plot_bitmap(b)
+  bright = brightness(I, 10, shape=I.shape)
+  plot_bitmap(I, bright)
 
 if __name__ == "__main__":
   main()
